@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{customer/_layout.html}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>List Mahasiswa</title>
+	<link th:href="@{/css/styles.min.css}" rel="stylesheet">
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- logoout Alert-->
+		<div th:if="${param.addedtocart}">
+			<div class="alert alert-info">Item has been successfully added to cart.</div>
+		</div>
+		<div class="row">
+			<table style="width: 100;">
+				<tr th:each="cp: ${cart.products}">
+
+					<div class="card overflow-hidden rounded-2">
+						<div class="position-relative">
+							<a href="javascript:void(0)"><img th:src="@{'/img/'+${cp.mainImage}}"
+									class="card-img-top rounded-0" alt="..."></a>
+
+							<div class="card-body pt-3 p-4">
+								<h6 class="fw-semibold fs-4" th:text="${cp.productName}"></h6>
+								<div class="d-flex align-items-center justify-content-between">
+									<h6 class="fw-semibold fs-4 mb-0" th:text="'Rp. '+${cp.price}">
+								</div>
+								<a th:href="@{'cancelProduct/' + ${cp.id}}"
+									class="btn btn-warning m-1 d-inline-flex position-absolute bottom-0 end-0 mb-3">cancel</a>
+							</div>
+						</div>
+				</tr>
+			</table>
+		</div>
+		<div class="row">
+			<div class="card">
+				<div class="card-body">
+					<form th:action="@{'/user/checkoutOrder/' + ${cart.id}}" method="post" th:object="${order}">
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Total Pembayaran</label>
+							<input type="email" class="form-control" id="exampleInputEmail1"
+								aria-describedby="emailHelp" th:value="${cart.total}" disabled>
+							<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputPassword1" class="form-label">Payment</label>
+							<select  class="form-select" th:field="*{payment}">
+								<option th:each="p : ${paymentList}" th:value="${p.id}" th:text="${p.name}">
+								</option>
+							</select>
+						</div>
+							<div class="mb-3">
+							<label for="exampleInputPassword1" class="form-label">Payment</label>
+							<select class="form-select" th:field="*{shipping}">
+								<option th:each="s : ${shippingList}" th:value="${s.id}" th:text="${s.name}+ ' dengan tarif Rp. ' + ${s.fee}">
+								</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-success">Checkout</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

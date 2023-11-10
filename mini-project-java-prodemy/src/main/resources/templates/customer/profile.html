@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Profile</title>
+<link th:href="@{/css/styles.min.css}" rel="stylesheet">
+</head>
+<body>
+      <div class="container-fluid">
+		  	<div class="row justify-content-center my-5">
+				  <div class="col-6">
+			<div class="card">
+				<div class="card-body">
+					<a th:href="@{/user}" class="btn btn-light"><i class="ti ti-arrow-left"></i></a>
+					 <form th:action="@{/user/updateProfile}" th:object="${user}" method="post" >
+								<input type="text" class="form-control" id="exampleInputEmail1"
+								aria-describedby="emailHelp" th:field="*{userName}" th:value="*{userName}" hidden>
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Nama Lengkap</label>
+							<input type="text" class="form-control" id="exampleInputEmail1"
+								aria-describedby="emailHelp" th:field="*{fullName}" th:value="*{fullName}" >
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputPassword1" class="form-label">Email</label>
+								<input type="email" class="form-control" id="exampleInputEmail1"
+								aria-describedby="emailHelp" th:field="*{email}" th:value="*{email}">
+						</div>
+						<div class="mb-3">
+							<label for="exampleInputEmail1" class="form-label">Username</label>
+							<p class="form-control" id="exampleInputEmail1"
+								aria-describedby="emailHelp" th:text="*{userName}"></p>
+						<div class="d-flex justify-content-center pt-4">
+						<button type="submit" class="btn btn-success mx-2">Update</button>
+						<a class="btn btn-warning mx-2" th:href="@{/user/update-password}">Change Password</a>
+						</div>
+						</div>
+						
+					</form>
+				</div>
+			</div>
+			</div>
+		</div>
+      </div>
+</body>
+</html>

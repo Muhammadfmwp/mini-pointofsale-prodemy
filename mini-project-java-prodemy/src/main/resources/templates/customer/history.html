@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{customer/_layout.html}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>List Mahasiswa</title>
+	<link th:href="@{/css/styles.min.css}" rel="stylesheet">
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- logoout Alert-->
+		<div th:if="${param.addedtocart}">
+			<div class="alert alert-info">Item has been successfully added to cart.</div>
+		</div>
+		<div class="row">
+			<table style="width: 100;">
+				<tr th:each="o: ${listOrder}">
+
+					<div class="card overflow-hidden rounded-2">
+						<div class="position-relative">
+							<a href="javascript:void(0)"><img th:src="@{'/img/'+${o.products.get(0).mainImage}}"
+									class="card-img-top rounded-0" alt="..."></a>
+
+							<div class="card-body pt-3 p-4">
+								<h6 class="fw-semibold fs-4" th:text="${o.products.get(0).productName}"></h6>
+								<div class="d-flex align-items-center justify-content-between">
+									<h6 class="fw-semibold fs-4 mb-0" th:text="'Rp. '+${o.total}">
+								</div>
+								<a class="btn btn-success m-1 d-inline-flex position-absolute bottom-0 end-0 mb-3">Paid</a>
+							</div>
+						</div>
+				</tr>
+			</table>
+		</div>
+	</div>
+</body>
+
+</html>

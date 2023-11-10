@@ -55,7 +55,13 @@ public class UserOrderController {
 	
 	@GetMapping("/user/cart")
 	public String listCart(Model model, Principal principal) {
+		if(userOrderService.getCartByUser(principal) == null)
+		{
+			return "customer/cart_empty";
+		}
+		else {
 		UserOrder cart =  userOrderService.getCartByUser(principal);
+		System.out.println(principal.getName());
 		model.addAttribute("cart", cart);
 
 		List<Payment> payment = paymentRepository.findAll();
@@ -63,11 +69,17 @@ public class UserOrderController {
 		model.addAttribute("paymentList", payment);
 		model.addAttribute("shippingList", shipping);
 		
-		return "user/cart";
+		return "customer/cart";
+		}
 	}
 	
 	@GetMapping("/admin/cart")
 	public String listCartAdmin(Model model, Principal principal) {
+		if(userOrderService.getCartByUser(principal).equals(null))
+		{
+			return "admin/cart_empty";
+		}
+		else {
 		UserOrder cart =  userOrderService.getCartByUser(principal);
 		model.addAttribute("cart", cart);
 
@@ -76,31 +88,44 @@ public class UserOrderController {
 		model.addAttribute("paymentList", payment);
 		model.addAttribute("shippingList", shipping);
 		return "admin/cart";
+		}
 	}
 	
 	@GetMapping("/user/history")
 	public String listHistory(Model model, Principal principal) {
+		if(userOrderService.getHistoryByUser(principal) == null)
+		{
+			return "customer/history_empty";
+		}
+		else {
 		List<UserOrder> listOrder = userOrderService.getHistoryByUser(principal);
 		model.addAttribute("listOrder", listOrder);
-		return "user/history";
+		return "customer/history";
+		}
 	}
 	
 	@GetMapping("/admin/history")
 	public String listHistoryAdmin(Model model, Principal principal) {
+		if(userOrderService.getHistoryByUser(principal) == null)
+		{
+			return "admin/history_empty";
+		}
+		else {
 		List<UserOrder> listOrder = userOrderService.getHistoryByUser(principal);
 		model.addAttribute("listOrder", listOrder);
 		return "admin/history";
+		}
 	}
 	
 	
-	@PostMapping("/user/checkoutOrder")
-	public String checkout(Long id, @ModelAttribute("order") UserOrderDto userOrderDto) {
+	@PostMapping("/user/checkoutOrder/{id}")
+	public String checkout(@PathVariable (value = "id") Long id, @ModelAttribute("order") UserOrderDto userOrderDto) {
 		userOrderService.checkout(id, userOrderDto);
 		return "redirect:/user/history";
 	}
 	
 	@PostMapping("/admin/checkoutOrder")
-	public String checkoutAdmin(Long id, @ModelAttribute("order") UserOrderDto userOrderDto) {
+	public String checkoutAdmin(@PathVariable (value = "id") Long id, @ModelAttribute("order") UserOrderDto userOrderDto) {
 		userOrderService.checkout(id, userOrderDto);
 		return "redirect:/admin/history";
 	}
@@ -115,6 +140,18 @@ public class UserOrderController {
 	public String cancelOrderAdmin(@PathVariable("id") Long id) {
 		userOrderService.cancel(id);
 		return "redirect:/admin/cart";
+	}
+	
+	@GetMapping("/user/cancelProduct/{id}")
+	public String cancelOrder(@PathVariable("id") Long id, Principal principal) {
+		userOrderService.cancelProduct(id, principal);
+		return "redirect:/user/cart";
+	}
+	
+	@GetMapping("/admin/cancelProduct/{id}")
+	public String cancelOrderAdmin(@PathVariable("id") Long id, Principal principal) {
+		userOrderService.cancelProduct(id, principal);
+		return "redirect:/user/cart";
 	}
 
 

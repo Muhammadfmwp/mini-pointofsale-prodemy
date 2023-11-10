@@ -9,9 +9,9 @@ import com.prodemy.springboot.model.User;
 import com.prodemy.springboot.model.UserOrder;
 
 public interface UserOrderRepository extends JpaRepository<UserOrder, Long> {
-	@Query("SELECT o FROM UserOrder o WHERE o.status = 'Cart'")
+	@Query("SELECT o FROM UserOrder o WHERE o.status = 'Cart' AND user = :user")
 	List<UserOrder> findCartByUser(User user);
 	
-	@Query("SELECT o FROM UserOrder o WHERE o.status = 'Paid'")
+	@Query("SELECT o FROM UserOrder o WHERE o.status = 'Paid' AND user = :user")
 	List<UserOrder> findHistoryByUser(User user);
 }

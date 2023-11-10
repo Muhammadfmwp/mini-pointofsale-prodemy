@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{customer/_layout.html}">
+
+<head>
+	<meta charset="UTF-8">
+	<title>List Mahasiswa</title>
+	<link th:href="@{/css/styles.min.css}" rel="stylesheet">
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<!-- logoout Alert-->
+		<div th:if="${param.addedtocart}">
+			<div class="alert alert-info">Item has been successfully added to cart.</div>
+		</div>
+		<div class="row">
+			<div class="card">
+				<div class="card-body">
+						<h4>History is empty</h4>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+
+</html>

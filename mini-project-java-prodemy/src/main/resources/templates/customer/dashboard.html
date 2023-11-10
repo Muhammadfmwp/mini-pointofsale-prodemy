@@ -1,93 +1,37 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{customer/_layout.html}">
 <head>
 <meta charset="UTF-8">
 <title>List Mahasiswa</title>
-<link th:href="@{/css/style.css}" rel="stylesheet">
-<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+<link th:href="@{/css/styles.min.css}" rel="stylesheet">
 </head>
 <body>
-
-	<div class="container">
-		<center>
-		<div class="form" style="opacity:80%;width: 100%;color: white; height: auto;margin:auto">
-			  <a th:href="@{/}" class="back-btn" style="margin-left: -26rem;">Kembali</a>
-	<h1>List Mahasiswa</h1>
-	<h2>[[${#authentication.principal.fullName}]]</h2>
-	<form th:action="@{/product/list/page/1}" method="get">
-		<input type="text" name="sortField" value="productName" hidden>
-		<input type="text" name="sortDir" value="asc" hidden>
-		<input type="text" name="productName">
-		<button type="submit">submit</button>
-	</form>
-			<a href="/logout">Logout</a>
-	<table class="table" style="color: white;">
-		<thead>
-			<tr>
-				<th scope="col">
-					<a th:href="@{'/page/' + ${currentPage} + '?sortField=nim&sortDir=' + ${reverseSortDir}}">
-						Username
-					</a>
-				</th>
-				<th scope="col">
-					<a th:href="@{'/page/' + ${currentPage} + '?sortField=nama&sortDir=' + ${reverseSortDir}}">
-						Fullname
-					</a>
-				</th>
-				<th scope="col">
-					<a th:href="@{'/page/' + ${currentPage} + '?sortField=alamat&sortDir=' + ${reverseSortDir}}">
-						Email
-					</a>
-				</th>
-				<th scope="col">
-						<a th:href="@{'/page/' + ${currentPage} + '?sortField=tglLahir&sortDir=' + ${reverseSortDir}}">
-						Role
-					</a>
-				</th>
-				<th scope="col" rowspan="2"></th>
-				<th scope="col"></th>
+	<div layout:fragment="content">
+		   <!-- logoout Alert-->
+	   <div th:if="${param.addedtocart}">
+		   <div class="alert alert-info">Item has been successfully added to cart.</div>  
+	   </div>
+		<div class="row">
+		<table style="width: 100;">
+			<tr th:each="product : ${listProduct}">
+				   <div class="col-sm-6 col-xl-3">
+            <div class="card overflow-hidden rounded-2">
+              <div class="position-relative">
+                <a href="javascript:void(0)"><img th:src="@{'/img/'+${product.mainImage}}" class="card-img-top rounded-0" alt="..."></a>
+                <a th:href="@{'user/addToCart/' + ${product.id}}" class="bg-primary rounded-circle p-2 text-white d-inline-flex position-absolute bottom-0 end-0 mb-n3 me-3" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Add To Cart"><i class="ti ti-basket fs-4"></i></a>                      </div>
+              <div class="card-body pt-3 p-4">
+                <h6 class="fw-semibold fs-4" th:text="${product.productName}"></h6>
+                <div class="d-flex align-items-center justify-content-between">
+                  <h6 class="fw-semibold fs-4 mb-0" th:text="'Rp. '+${product.price}">
+                </div>
+              </div>
+            </div>
+          </div>
 			</tr>
-		</thead>
-		<tbody>
-			<tr th:each="product: ${listProduct}">
-				<td th:text="${product.productName}"></td>
-				<td><img height="20px" alt="${product.img}" th:src="@{'/img/'+${product.img}}"></td>
-				<td th:text="${product.price}"></td>
-				<td th:text="${product.description}"></td>
-				<td><a th:href="@{'/editProduct/' + ${product.id}}" class="btn btn-primary">Update</a></td>
-				<td><a th:href="@{'/deleteProduct/' + ${product.id}}" class="btn btn-danger">Delete</a></td>
-		</tr>
-		</tbody>
-	</table>
-	
-	<div th:if="${totalPages > 1 }">
-		<div class="row col-sm-10">
-			<div class="col-sm-2">
-				Total Rows: [[${totalItems}]]
-			</div>
-			<div class="col-sm-1">
-				<span th:each="i: ${#numbers.sequence(1, totalPages)}">
-					<a th:if="${currentPage != i}" th:href="@{'/product/list/page/' + ${i} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">
-						[[${i}]]
-					</a>
-					<span th:unless="${currentPage != i}">
-						[[${i}]]
-					</span> &nbsp;&nbsp;
-				</span>
-			</div>
-			<div class="col-sm-1">
-				<a th:if="${currentPage < totalPages}" th:href="@{'/product/list/page/' + ${currentPage + 1} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Next</a>
-				<span th:unless="${currentPage < totalPages}">Next</span>
-			</div>
-			<div class="col-sm-1">
-				<a th:if="${currentPage < totalPages}" th:href="@{'/page/' + ${totalPages} + '?sortField=' + ${sortField} + '&sortDir=' + ${sortDir}}">Last</a>
-				<span th:unless="${currentPage < totalPages}">Last</span>
-			</div>
-		</div>
+		</table>
 	</div>
 	</div>
-	</center>
-	</div>
-
 </body>
 </html>

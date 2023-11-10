@@ -26,18 +26,19 @@ public class UserOrderServiceImpl implements UserOrderService {
 	private UserOrderRepository userOrderRepository;
 	private UserRepository userRepository;
 	private ProductRepository productRepository;
-	
-	public UserOrderServiceImpl(UserOrderRepository userOrderRepository, UserRepository userRepository, ProductRepository productRepository) {
+
+	public UserOrderServiceImpl(UserOrderRepository userOrderRepository, UserRepository userRepository,
+			ProductRepository productRepository) {
 		super();
 		this.userOrderRepository = userOrderRepository;
-		this.userRepository =  userRepository;
+		this.userRepository = userRepository;
 		this.productRepository = productRepository;
 	}
 
 	@Override
 	public UserOrder addtoCart(Long id, Principal principal) {
 		User user = userRepository.findByUserName(principal.getName());
-		if(userOrderRepository.findCartByUser(user).isEmpty()) {
+		if (userOrderRepository.findCartByUser(user).isEmpty()) {
 			UserOrder order = new UserOrder();
 			Product product = productRepository.getById(id);
 			order.setUser(user);
@@ -46,39 +47,34 @@ public class UserOrderServiceImpl implements UserOrderService {
 			order.setProducts(Arrays.asList(product));
 			order.setTotal(before + product.getPrice());
 			return userOrderRepository.save(order);
-		}
-		else {
-			List<UserOrder> order =  userOrderRepository.findCartByUser(user);
+		} else {
+			List<UserOrder> order = userOrderRepository.findCartByUser(user);
 			Optional<UserOrder> optional = userOrderRepository.findById(order.get(0).getId());
 			UserOrder cart = null;
-			if(optional.isPresent()) {
+			if (optional.isPresent()) {
 				cart = optional.get();
 				Product product = productRepository.getById(id);
 				cart.getProducts().add(product);
 				double before = cart.getTotal();
 				cart.setTotal(before + product.getPrice());
 				return userOrderRepository.save(cart);
-			}
-			else {
+			} else {
 				throw new RuntimeException("Order tidak ditemukan");
-				}
-			
-		}	
-	
+			}
+
+		}
+
 	}
-
-
 
 	@Override
 	public UserOrder getDetails(Long id) {
 		Optional<UserOrder> optional = userOrderRepository.findById(id);
 		UserOrder order = null;
-		if(optional.isPresent()) {
+		if (optional.isPresent()) {
 			order = optional.get();
-		}
-		else {
+		} else {
 			throw new RuntimeException("Order tidak ditemukan");
-			}
+		}
 		return order;
 	}
 
@@ -87,13 +83,13 @@ public class UserOrderServiceImpl implements UserOrderService {
 		userOrderRepository.deleteById(id);
 	}
 
-
-
-
 	@Override
 	public List<UserOrder> getHistoryByUser(Principal principal) {
 		// TODO Auto-generated method stub
-		User user =  userRepository.findByUserName(principal.getName());
+		User user = userRepository.findByUserName(principal.getName());
+		if(userOrderRepository.findHistoryByUser(user).isEmpty()) {
+			return null;
+		}
 		return userOrderRepository.findHistoryByUser(user);
 	}
 
@@ -110,20 +106,36 @@ public class UserOrderServiceImpl implements UserOrderService {
 		t += userOrderDto.getShipping().getFee();
 		order.setTotal(t);
 		order.setStatus("Paid");
-		
-		
+
 		return userOrderRepository.save(order);
 	}
 
 	@Override
 	public UserOrder getCartByUser(Principal principal) {
-		User user =  userRepository.findByUserName(principal.getName());
+		User user = userRepository.findByUserName(principal.getName());
+		if(userOrderRepository.findCartByUser(user).isEmpty()) {
+			return null;
+		}
 		return userOrderRepository.findCartByUser(user).get(0);
 	}
 
-
-
-
+	@Override
+	public UserOrder cancelProduct(Long id, Principal principal) {
+		User user = userRepository.findByUserName(principal.getName());
+		List<UserOrder> order = userOrderRepository.findCartByUser(user);
+		Optional<UserOrder> optional = userOrderRepository.findById(order.get(0).getId());
+		UserOrder cart = null;
+		if (optional.isPresent()) {
+			cart = optional.get();
+			Product product = productRepository.getById(id);
+			cart.getProducts().remove(product);
+			double before = cart.getTotal();
+			cart.setTotal(before - product.getPrice());
+			return userOrderRepository.save(cart);
+		} else {
+			throw new RuntimeException("Order tidak ditemukan");
+		}
+	}
 
 
 }

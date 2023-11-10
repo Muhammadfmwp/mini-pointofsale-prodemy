@@ -21,8 +21,11 @@ import org.springframework.stereotype.Service;
 import com.prodemy.springboot.config.CustomUserDetails;
 import com.prodemy.springboot.model.Role;
 import com.prodemy.springboot.model.User;
+import com.prodemy.springboot.model.UserOrder;
 import com.prodemy.springboot.repository.RoleRepository;
+import com.prodemy.springboot.repository.UserOrderRepository;
 import com.prodemy.springboot.repository.UserRepository;
+import com.prodemy.springboot.service.UserOrderService;
 import com.prodemy.springboot.service.UserService;
 import com.prodemy.springboot.web.dto.UserDto;
 
@@ -32,13 +35,15 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userRepository;
 	private RoleRepository roleRepository;
 	private BCryptPasswordEncoder passwordEncoder;
+	private UserOrderRepository userOrderRepository;
 
 
-	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository ,@Lazy BCryptPasswordEncoder passwordEncoder) {
+	public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository ,@Lazy BCryptPasswordEncoder passwordEncoder, UserOrderRepository userOrderRepository) {
 		super();
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.userOrderRepository = userOrderRepository;
 	}
 
 	@Override
@@ -88,7 +93,6 @@ public class UserServiceImpl implements UserService {
 		user.setFullName(userRegistrationDto.getFullName());
 		user.setUserName(userRegistrationDto.getUserName());
 		user.setEmail(userRegistrationDto.getEmail());
-		user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
 		return userRepository.save(user);
 		
 	}
@@ -102,9 +106,16 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public User updatePassword(Principal principal, UserDto userRegistrationDto) {
-		// TODO Auto-generated method stub
 		User user = userRepository.findByUserName(principal.getName());
-		user.setPassword(userRegistrationDto.getPassword());
+		user.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
+		return userRepository.save(user);
+	}
+
+	@Override
+	public User updateProfile(Principal principal, UserDto userRegistrationDto) {
+		User user = userRepository.findByUserName(principal.getName());
+		user.setFullName(userRegistrationDto.getFullName());
+		user.setEmail(userRegistrationDto.getEmail());
 		return userRepository.save(user);
 	}
 

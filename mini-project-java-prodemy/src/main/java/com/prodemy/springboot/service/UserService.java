@@ -13,6 +13,7 @@ public interface UserService {
 	User save(UserDto userRegistrationDto);
 	Page<User> paginatedPage(int pageNo, int pageSize, String sortField, String sortDirection);
 	User updateUser(Long id,UserDto userRegistrationDto);
+	User updateProfile(Principal principal ,UserDto userRegistrationDto);
 	User getByUser(Long id);
 	User getProfile(Principal principal);
 	User updatePassword(Principal principal,UserDto userRegistrationDto);

@@ -79,13 +79,25 @@ public class UserController {
 	@PostMapping("/register")
 	public String registerUserAccount(@ModelAttribute("user") UserDto userRegistrationDto) {
 		userService.save(userRegistrationDto);
-		return "redirect:/register?success";
+		return "redirect:/login?successregister";
 	}
 	
 	@PostMapping("/admin/updateUser")
 	public String updateUserAccount(@RequestParam Long id, @ModelAttribute("user") UserDto userRegistrationDto) {
 		userService.updateUser(id,userRegistrationDto);
 		return "redirect:/admin/listUser?updated";
+	}
+	
+	@PostMapping("/user/updateProfile")
+	public String updateAccount(Principal principal, @ModelAttribute("user") UserDto userRegistrationDto) {
+		userService.updateProfile(principal,userRegistrationDto);
+		return "redirect:/user/profile?updated";
+	}
+	
+	@PostMapping("/admin/updateProfile")
+	public String updateAdminAccount(Principal principal, @ModelAttribute("user") UserDto userRegistrationDto) {
+		userService.updateProfile(principal,userRegistrationDto);
+		return "redirect:/admin/profile?updated";
 	}
 	
 	@GetMapping("/admin/editUser/{id}")
@@ -100,18 +112,18 @@ public class UserController {
 	public String showProfileAdmin(Principal principal, Model model) {
 		User user = userService.getProfile(principal);
 		model.addAttribute("user", user);
-		return "profile";
+		return "admin/profile";
 	}
 	
 	@GetMapping("/admin/update-password")
 	public String updatePasswordAdmin() {
-		return "update_password";
+		return "admin/update_password";
 	}
 	
-	@GetMapping("/admin/updatePassword")
+	@PostMapping("/admin/updatePassword")
 	public String updatePasswordAdmin(Principal principal,  @ModelAttribute("user") UserDto userDto) {
 		userService.updatePassword(principal, userDto);
-		return "profile?success";
+		return "redirect:/admin/profile?passwordupdated";
 	}
 	
 	
@@ -119,18 +131,18 @@ public class UserController {
 	public String showProfileUser(Principal principal, Model model) {
 		User user = userService.getProfile(principal);
 		model.addAttribute("user", user);
-		return "profile";
+		return "customer/profile";
 	}
 	
 	@GetMapping("/user/update-password")
 	public String updatePasswordUser() {
-		return "update_password";
+		return "customer/update_password";
 	}
 	
-	@GetMapping("/user/updatePassword")
+	@PostMapping("/user/updatePassword")
 	public String updatePassword(Principal principal,  @ModelAttribute("user") UserDto userDto) {
 		userService.updatePassword(principal, userDto);
-		return "profile?success";
+		return "redirect:/user/profile?passwordupdated";
 	}
 	
 
